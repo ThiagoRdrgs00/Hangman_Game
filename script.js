@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hangmanParts = document.querySelectorAll('.hangman-part');
     
     // Palavras por categoria
-    const wordsByCategory = {
+    const opcoesPalavrasPorCategoria = {
         'Animais': ['ELEFANTE', 'GIRAFA', 'TIGRE', 'LEOPARDO', 'RINOCERONTE', 'HIPOPOTAMO', 'CROCODILO', 'ARARA', 'TUCANO', 'PANTERA'],
         'Países': ['BRASIL', 'ARGENTINA', 'CANADA', 'JAPAO', 'AUSTRALIA', 'ALEMANHA', 'FRANCA', 'ITALIA', 'ESPANHA', 'PORTUGAL'],
         'Frutas': ['BANANA', 'MORANGO', 'ABACAXI', 'LARANJA', 'MELANCIA', 'UVA', 'MANGA', 'KIWI', 'MELAO', 'AMORA'],
@@ -17,14 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // Variáveis do jogo
-    let selectedWord = '';
-    let guessedLetters = [];
-    let wrongGuesses = 0;
-    let currentCategory = '';
-    const maxWrongGuesses = 6;
+    let palavraSelecionada = '';
+    let categoriaSelecionada = '';
+    let contagemErro = 0;
+    const maxContagemErro = 6;
+    let letrasEscolhidas = [];
     
     // Inicializa o teclado
-    function initializeKeyboard() {
+    function montaLetrasEmTela() {
         keyboard.innerHTML = '';
         for (let i = 65; i <= 90; i++) {
             const letter = String.fromCharCode(i);
@@ -38,16 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Seleciona uma palavra aleatória
-    function selectRandomWord() {
-        const categories = Object.keys(wordsByCategory);
-        currentCategory = categories[Math.floor(Math.random() * categories.length)];
-        const words = wordsByCategory[currentCategory];
-        selectedWord = words[Math.floor(Math.random() * words.length)];
-        guessedLetters = [];
-        wrongGuesses = 0;
+    function selecionaPalavraAleatoria() {
+        const categorias = Object.keys(opcoesPalavrasPorCategoria);
+        categoriaSelecionada = categorias[Math.floor(Math.random() * categorias.length)];
+        const palavras = opcoesPalavrasPorCategoria[categoriaSelecionada];
+        palavraSelecionada = palavras[Math.floor(Math.random() * palavras.length)];
+        letrasEscolhidas = [];
+        contagemErro = 0;
         
         // Atualiza a categoria
-        categoryElement.textContent = `Categoria: ${currentCategory}`;
+        categoryElement.textContent = `Categoria: ${categoriaSelecionada}`;
         
         // Esconde todas as partes do boneco
         hangmanParts.forEach(part => part.style.display = 'none');
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rope').style.display = 'block';
         
         // Atualiza a exibição da palavra
-        updateWordDisplay();
+        atualizaPalavra();
         
         // Limpa a mensagem
         messageElement.textContent = '';
@@ -72,39 +72,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Atualiza a exibição da palavra
-    function updateWordDisplay() {
-        wordDisplay.textContent = selectedWord
+    function atualizaPalavra() {
+        wordDisplay.textContent = palavraSelecionada
             .split('')
-            .map(letter => guessedLetters.includes(letter) ? letter : '_')
+            .map(letter => letrasEscolhidas.includes(letter) ? letter : '_')
             .join(' ');
     }
     
     // Processa um palpite
     function handleGuess(letter) {
-        if (guessedLetters.includes(letter)) return;
+        if (letrasEscolhidas.includes(letter)) return;
         
-        guessedLetters.push(letter);
+        letrasEscolhidas.push(letter);
         document.getElementById(`letter-${letter}`).disabled = true;
         
-        if (selectedWord.includes(letter)) {
+        if (palavraSelecionada.includes(letter)) {
             // Letra correta
             document.getElementById(`letter-${letter}`).style.backgroundColor = '#4CAF50';
-            document.getElementById(`letter-${letter}`).style.color = 'white';
-            updateWordDisplay();
-            checkWin();
+            document.getElementById(`letter-${letter}`).style.color = '#FFFFFF';
+            atualizaPalavra();
+            verificaWin();
         } else {
             // Letra incorreta
-            wrongGuesses++;
-            document.getElementById(`letter-${letter}`).style.backgroundColor = 'red';
-            document.getElementById(`letter-${letter}`).style.color = 'white';  
-            updateHangman();
-            checkLose();
+            contagemErro++;
+            document.getElementById(`letter-${letter}`).style.backgroundColor = '#FF0000';
+            document.getElementById(`letter-${letter}`).style.color = '#FFFFFF';  
+            adicionaPedacoCorpo();
+            verificaGameOver();
         }
     }
     
     // Atualiza o desenho da forca
-    function updateHangman() {
-        switch(wrongGuesses) {
+    function adicionaPedacoCorpo() {
+        switch(contagemErro) {
             case 1:
                 document.getElementById('head').style.display = 'block';
                 break;
@@ -127,26 +127,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Verifica se o jogador ganhou
-    function checkWin() {
-        if (selectedWord.split('').every(letter => guessedLetters.includes(letter))) {
+    function verificaWin() {
+        if (palavraSelecionada.split('').every(letter => letrasEscolhidas.includes(letter))) {
             messageElement.textContent = 'Parabéns! Você ganhou!';
             messageElement.className = 'win';
-            disableAllButtons();
+            bloqueiaTentativas();
         }
     }
     
     // Verifica se o jogador perdeu
-    function checkLose() {
-        if (wrongGuesses >= maxWrongGuesses) {
-            messageElement.textContent = `Game Over! A palavra era: ${selectedWord}`;
+    function verificaGameOver() {
+        if (contagemErro >= maxContagemErro) {
+            messageElement.textContent = `Game Over! A palavra era: ${palavraSelecionada}`;
             messageElement.className = 'lose';
-            wordDisplay.textContent = selectedWord.split('').join(' ');
-            disableAllButtons();
+            wordDisplay.textContent = palavraSelecionada.split('').join(' ');
+            bloqueiaTentativas();
         }
     }
     
     // Desabilita todos os botões
-    function disableAllButtons() {
+    function bloqueiaTentativas() {
         document.querySelectorAll('.letter-btn').forEach(btn => {
             btn.disabled = true;
         });
@@ -154,13 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Event listeners
     resetBtn.addEventListener('click', () => {
-        selectRandomWord();
-        initializeKeyboard();
+        selecionaPalavraAleatoria();
+        montaLetrasEmTela();
     });
     
     // Inicializa o jogo
-    initializeKeyboard();
-    selectRandomWord();
+    montaLetrasEmTela();
+    selecionaPalavraAleatoria();
     
     // Adiciona suporte para teclado físico
     document.addEventListener('keydown', (e) => {
