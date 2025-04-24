@@ -4,8 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageElement = document.getElementById('message');
     const keyboard = document.getElementById('keyboard');
     const resetBtn = document.getElementById('reset-btn');
+    const startBtn = document.getElementById('start-btn');
     const categoryElement = document.getElementById('category');
     const hangmanParts = document.querySelectorAll('.hangman-part');
+    const gamerContainer = document.getElementById('game-container');
+    const startCotainer = document.getElementById('game-start');
     
     // Palavras por categoria
     const opcoesPalavrasPorCategoria = {
@@ -13,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'Países': ['BRASIL', 'ARGENTINA', 'CANADA', 'JAPAO', 'AUSTRALIA', 'ALEMANHA', 'FRANCA', 'ITALIA', 'ESPANHA', 'PORTUGAL'],
         'Frutas': ['BANANA', 'MORANGO', 'ABACAXI', 'LARANJA', 'MELANCIA', 'UVA', 'MANGA', 'KIWI', 'MELAO', 'AMORA'],
         'Objetos': ['TELEFONE', 'COMPUTADOR', 'CADERNO', 'CANETA', 'TESOURA', 'GUARDA-CHUVA', 'RELOGIO', 'OCULOS', 'CADEIRA', 'MESA'],
-        'Linguagens de Programação': ['LUA', 'JAVA', 'PYTHON', 'JAVASCRIPT', 'REACT', 'HTML', 'ASPNET', 'COBOL']
+        'Linguagens de Programação': ['LUA', 'JAVA', 'PYTHON', 'JAVASCRIPT', 'TYPESCRIPT', 'PHP', 'ASPNET', 'COBOL'],
+        'Esportes' : ['JUDO', 'TENIS', 'MOTOCICLISMO', 'AUTOMOBILISMO', 'FISICULTURISMO', 'HIPISMO', 'BEACHTENNIS', 'SOFTBALL']
     };
     
     // Variáveis do jogo
@@ -156,6 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
     resetBtn.addEventListener('click', () => {
         selecionaPalavraAleatoria();
         montaLetrasEmTela();
+    });
+
+    startBtn.addEventListener('click', () => {
+        console.log("teste")
+        startCotainer.style.display = "none";
+        gamerContainer.style.display = "flex";
     });
     
     // Inicializa o jogo
