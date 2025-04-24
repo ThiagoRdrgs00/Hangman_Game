@@ -6,6 +6,8 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     padding: 100px;
+    background-image: url('teetuch-timgasigum-star-space.gif');
+    background-size: cover;
 }
 
 h1 {
@@ -37,7 +39,7 @@ h1 {
 }
 
 #game-container {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     background-color: white;
@@ -46,6 +48,7 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     width: 100%;
+    opacity: 0;
 }
 
 #hangman-container {
@@ -234,4 +237,8 @@ h1 {
     margin-bottom: 20px;
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.fade-out {
+    transition: opacity 0.5s ease-in;
 }

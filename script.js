@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     startBtn.addEventListener('click', () => {
-        console.log("teste")
         startCotainer.style.display = "none";
-        gamerContainer.style.display = "flex";
+        gamerContainer.style.opacity = 0.8;
+        gamerContainer.classList.add('fade-out');
     });
     
     // Inicializa o jogo
